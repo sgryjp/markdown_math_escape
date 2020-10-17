@@ -11,12 +11,6 @@ import markdown.inlinepatterns
 import markdown.postprocessors
 import markdown.preprocessors
 
-__version__ = "0.20.10.17"
-__all__ = [
-    "makeExtension",
-    "MathEscapeExtension",
-]
-
 _re_dollers_inline = re.compile(r"(?<!\\)\$(?!\$)(?P<expr>[^\$]*)(?<!\\)\$(?!\$)")
 _re_dollers_block_begin = re.compile(r"^(?P<indent>\s*)(?P<fence>\$\$)")
 _re_dollers_block_end = _re_dollers_block_begin

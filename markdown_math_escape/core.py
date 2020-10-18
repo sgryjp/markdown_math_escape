@@ -60,14 +60,22 @@ _profiles = {
 
 
 def _encode(s: str) -> str:
-    s = s.replace("&", "&amp;")
-    s = s.replace("<", "&lt;")
-    s = s.replace(">", "&gt;")
-    return b64encode(s.encode("utf-8")).decode("utf-8")
+    s2 = s.replace("&", "&amp;")
+    s2 = s2.replace("<", "&lt;")
+    s2 = s2.replace(">", "&gt;")
+    try:
+        return b64encode(s2.encode("utf-8")).decode("utf-8")
+    except Exception:
+        _logger.warning("Failed to encode %s", repr(s))
+        return s
 
 
 def _decode(s: str) -> str:
-    return b64decode(s.encode("utf-8")).decode("utf-8")
+    try:
+        return b64decode(s.encode("utf-8")).decode("utf-8")
+    except Exception:
+        _logger.warning("Failed to decode %s", repr(s))
+        return s
 
 
 def makeExtension(**kwargs):

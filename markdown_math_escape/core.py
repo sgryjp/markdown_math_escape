@@ -72,7 +72,7 @@ def _decode(s: str) -> str:
 
 def makeExtension(**kwargs):
     """Register this extension to Python-Markdown."""
-    _logger.debug("markdown_math_escape: Registering...")
+    _logger.debug("Registering...")
     return MathEscapeExtension(**kwargs)
 
 
@@ -90,8 +90,7 @@ class MathEscapeExtension(markdown.extensions.Extension):
         delimiters = self.getConfig("delimiters")
         if delimiters not in _profiles:
             _logger.warning(
-                'markdown_math_escape: Falling back "delimiters" to "%s"; '
-                + '"%s" is not of (%s).',
+                'Falling back "delimiters" to "%s"; "%s" is not of (%s).',
                 _default_delimiters,
                 delimiters,
                 ", ".join([f'"{k}"' for k in _profiles]),
@@ -215,7 +214,7 @@ class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
             # Log summary
             if 0 < num_blocks + num_inlines:
                 _logger.debug(
-                    "markdown_math_escape: Processed %d blocks and %d inlines.",
+                    "Processed %d blocks and %d inlines.",
                     num_blocks,
                     num_inlines,
                 )

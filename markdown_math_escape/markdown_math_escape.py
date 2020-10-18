@@ -1,4 +1,5 @@
 import io
+import logging
 import re
 import xml.etree.ElementTree as etree
 from base64 import b64decode, b64encode
@@ -11,6 +12,7 @@ import markdown.inlinepatterns
 import markdown.postprocessors
 import markdown.preprocessors
 
+_logger = logging.getLogger(__name__)
 _default_delimiters = "dollers"
 
 _re_dollers_inline = re.compile(r"(?<!\\)\$(?!\$)(?P<expr>[^\$]*)(?<!\\)\$(?!\$)")
@@ -56,6 +58,7 @@ def _decode(s: str) -> str:
 
 def makeExtension(**kwargs):
     """Register this extension to Python-Markdown."""
+    _logger.debug("markdown_math_escape: Registering...")
     return MathEscapeExtension(**kwargs)
 
 
@@ -72,6 +75,13 @@ class MathEscapeExtension(markdown.extensions.Extension):
     def extendMarkdown(self, md):
         delimiters = self.getConfig("delimiters")
         if delimiters not in _profiles:
+            _logger.warning(
+                'markdown_math_escape: Falling back "delimiters" to "%s"; '
+                + '"%s" is not of (%s).',
+                _default_delimiters,
+                delimiters,
+                ", ".join([f'"{k}"' for k in _profiles]),
+            )
             delimiters = _default_delimiters
 
         md.preprocessors.register(
@@ -141,6 +151,8 @@ class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
         super().__init__(md)
 
     def run(self, text: str):
+        num_blocks = 0
+        num_inlines = 0
         lines = []
         newline = "\n"
         istream = io.StringIO(text)
@@ -164,6 +176,7 @@ class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
                 elif in_block and "</pre>" in line:
                     in_block = False
                     lines.append(line.replace("</pre>", "", 1))
+                    num_blocks += 1
                 elif in_block:
                     decoded = _decode(line)
                     lines.append(decoded)
@@ -177,8 +190,17 @@ class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
                         mathexpr = _decode(match.group(1))
                         tokens.append(line[offset : match.start()] + mathexpr)
                         offset = match.end()
+                        num_inlines += 1
                     tokens.append(line[offset:])
                     lines.append("".join(tokens))
+
+            # Log summary
+            if 0 < num_blocks + num_inlines:
+                _logger.debug(
+                    "markdown_math_escape: Processed %d blocks and %d inlines.",
+                    num_blocks,
+                    num_inlines,
+                )
             return newline.join(lines)
         finally:
             istream.close()

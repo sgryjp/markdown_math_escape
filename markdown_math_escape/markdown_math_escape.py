@@ -71,6 +71,8 @@ class MathEscapeExtension(markdown.extensions.Extension):
 
     def extendMarkdown(self, md):
         delimiters = self.getConfig("delimiters")
+        if delimiters not in _profiles:
+            delimiters = _default_delimiters
 
         md.preprocessors.register(
             MathEscapePreprocessor(md, delimiters),

@@ -11,6 +11,8 @@ import markdown.inlinepatterns
 import markdown.postprocessors
 import markdown.preprocessors
 
+_default_delimiters = "dollers"
+
 _re_dollers_inline = re.compile(r"(?<!\\)\$(?!\$)(?P<expr>[^\$]*)(?<!\\)\$(?!\$)")
 _re_dollers_block_begin = re.compile(r"^(?P<indent>\s*)(?P<fence>\$\$)")
 _re_dollers_block_end = _re_dollers_block_begin
@@ -62,7 +64,10 @@ def makeExtension(**kwargs):
 class MathEscapeExtension(markdown.extensions.Extension):
     def __init__(self, **kwargs):
         self.config = {
-            "delimiters": ["dollers", "One of dollers, gitlab."],
+            "delimiters": [
+                _default_delimiters,
+                "Delimiters surrounding math expressions.",
+            ],
         }
         super(MathEscapeExtension, self).__init__(**kwargs)
 

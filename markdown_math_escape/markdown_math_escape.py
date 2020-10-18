@@ -102,6 +102,8 @@ class MathEscapeExtension(markdown.extensions.Extension):
 
 
 class MathEscapePreprocessor(markdown.preprocessors.Preprocessor):
+    """Preprocessor to base64 encode math blocks and enclose them in '<pre>'s."""
+
     def __init__(self, md, delimiters):
         self._re_block_begin = _profiles[delimiters]["re_block_begin"]
         self._re_block_end = _profiles[delimiters]["re_block_end"]
@@ -181,6 +183,7 @@ class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
                     decoded = _decode(line)
                     lines.append(decoded)
                 else:  # if not inside a math block
+                    # Replace all inline math expressions in this line
                     tokens = []
                     offset = 0
                     while True:

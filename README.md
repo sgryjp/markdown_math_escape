@@ -7,14 +7,18 @@ expressions like `$e^{i\pi} + 1 = 0$`.
 
 ## Description
 
-This extension keeps math expressions in your markdown documents unchanged and
-convert their delimiters (enclosing special characters) to ones compatible with
+This extension protects math expressions from markdown parser so that no
+unexpected change will happen. Then, it converts their delimiters (enclosing
+special characters) to "brackets" styled delimiters which is supported by both
 [MathJax](https://www.mathjax.org/) and [KaTeX](https://katex.org/).
-
 Since this extension does not render mathematics by itself:
 
 - Pros: It does not slow markdown processing down... it's very fast.
 - Cons: You need to setup either MathJax or KaTeX for client-side rendering.
+
+From a user point of view, you can choose delimiters for writing as you like
+and you do not need to worry about conflict between markdown syntax and TeX
+syntax.
 
 ## Installation
 

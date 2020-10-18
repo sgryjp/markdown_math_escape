@@ -15,12 +15,12 @@ _default_delimiters = "dollers"
 
 _re_dollers_inline = re.compile(r"(?<!\\)\$(?!\$)(?P<expr>[^\$]*)(?<!\\)\$(?!\$)")
 _re_dollers_block_begin = re.compile(r"^(?P<indent>\s*)(?P<fence>\$\$)")
-_re_dollers_block_end = _re_dollers_block_begin
+_re_dollers_block_end = re.compile(r"^(?P<indent>\s*)(?P<fence>\$\$)(?P<trailings>.*)$")
 
 _re_gitlab_inline = re.compile(r"(?<!\\)\$`(?P<expr>[^`]*)`\$")
 _re_gitlab_block_begin = re.compile(r"^(?P<indent>\s*)(?P<fence>```+|~~~+)math")
 _re_gitlab_block_end = re.compile(
-    r"^(?P<indent>\s*)(?P<fence>```+|~~~+)(?:\s*\((?P<eqno>\d+)\))?$"
+    r"^(?P<indent>\s*)(?P<fence>```+|~~~+)(?P<trailings>.*)$"
 )
 
 _re_escaped_inline_math = re.compile(
@@ -31,13 +31,11 @@ _escaped_block_math_begin = '<pre class="--markdown-math-escape">'
 
 _profiles = {
     "dollers": {
-        "make_inline": lambda expr: f"${expr}$",
         "re_inline": _re_dollers_inline,
         "re_block_begin": _re_dollers_block_begin,
         "re_block_end": _re_dollers_block_end,
     },
     "gitlab": {
-        "make_inline": lambda expr: f"$`{expr}`$",
         "re_inline": _re_gitlab_inline,
         "re_block_begin": _re_gitlab_block_begin,
         "re_block_end": _re_gitlab_block_end,
@@ -102,12 +100,24 @@ class MathEscapePreprocessor(markdown.preprocessors.Preprocessor):
         while i < len(lines):
             match1 = self._re_block_begin.match(lines[i])
             if match1:
-                j = self._find_closing_pair(lines, i, match1)
+                j, match2 = self._find_closing_pair(lines, i, match1)
                 if 0 <= j:
-                    lines[i] = _escaped_block_math_begin + lines[i]
+                    # Replace opening fence with "<pre>\["
+                    lines[i] = (
+                        match1.group("indent") + _escaped_block_math_begin + r"\["
+                    )
+
+                    # Encode lines inside the block
                     for k in range(i + 1, j):
                         lines[k] = _encode(lines[k])
-                    lines[j] = lines[j] + "</pre>"
+
+                    # Replace closing fence with "\]</pre>"
+                    lines[j] = (
+                        match2.group("indent")
+                        + r"\]"
+                        + match2.group("trailings")
+                        + "</pre>"
+                    )
                     i = j
             i += 1
         return lines
@@ -120,13 +130,12 @@ class MathEscapePreprocessor(markdown.preprocessors.Preprocessor):
                 and match2.group("indent") == match.group("indent")
                 and match2.group("fence") == match.group("fence")
             ):
-                return j
-        return -1
+                return j, match2
+        return -1, None
 
 
 class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
     def __init__(self, md, delimiters):
-        self._make_inline = _profiles[delimiters]["make_inline"]
         super().__init__(md)
 
     def run(self, text: str):
@@ -162,9 +171,7 @@ class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
                         if not match:
                             break
                         mathexpr = _decode(match.group(1))
-                        tokens.append(
-                            line[offset : match.start()] + self._make_inline(mathexpr)
-                        )
+                        tokens.append(line[offset : match.start()] + mathexpr)
                         offset = match.end()
                     tokens.append(line[offset:])
                     lines.append("".join(tokens))
@@ -181,5 +188,5 @@ class MathEscapeInlineProcessor(markdown.inlinepatterns.InlineProcessor):
     def handleMatch(self, match: Match, data: str):
         elm = etree.Element("code")
         elm.set("class", "--markdown-math-escape")
-        elm.text = _encode(match.group(1))
+        elm.text = _encode(r"\(" + match.group(1) + r"\)")
         return elm, match.start(0), match.end(0)

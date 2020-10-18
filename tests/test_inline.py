@@ -6,11 +6,11 @@ from markdown_math_escape import MathEscapeExtension
 _test_patterns_inline = {
     "dollers_basic": (
         r"foo $2*\pi*r$ x$y$z",
-        r"<p>foo $2*\pi*r$ x$y$z</p>",
+        r"<p>foo \(2*\pi*r\) x\(y\)z</p>",
     ),
     "dollers_&lt;, &gt; and &amp;": (
         r"$x+y for x<0, y>0$ bar",
-        r"<p>$x+y for x&lt;0, y&gt;0$ bar</p>",
+        r"<p>\(x+y for x&lt;0, y&gt;0\) bar</p>",
     ),
     "dollers_inside <p>": (
         r"<p>$2*\pi*r$</p>",
@@ -18,15 +18,15 @@ _test_patterns_inline = {
     ),
     "dollers_inside <s>": (
         r"<s>$2*\pi*r$</s>",
-        r"<p><s>$2*\pi*r$</s></p>",
+        r"<p><s>\(2*\pi*r\)</s></p>",
     ),
     "gitlab_basic": (
         r"foo $`2*\pi*r`$ x$`y`$z",
-        r"<p>foo $`2*\pi*r`$ x$`y`$z</p>",
+        r"<p>foo \(2*\pi*r\) x\(y\)z</p>",
     ),
     "gitlab_&lt; &gt; &amp;": (
         r"$`x+y for x<0, y>0`$ bar",
-        r"<p>$`x+y for x&lt;0, y&gt;0`$ bar</p>",
+        r"<p>\(x+y for x&lt;0, y&gt;0\) bar</p>",
     ),
     "gitlab_inside <p>": (
         r"<p>$`2*\pi*r`$</p>",
@@ -34,7 +34,7 @@ _test_patterns_inline = {
     ),
     "gitlab_inside <s>": (
         r"<s>$`2*\pi*r`$</s>",
-        r"<p><s>$`2*\pi*r`$</s></p>",
+        r"<p><s>\(2*\pi*r\)</s></p>",
     ),
 }
 

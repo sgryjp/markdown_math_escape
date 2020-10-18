@@ -1,5 +1,7 @@
 # markdown_math_escape
 
+![Test](https://github.com/sgryjp/markdown_math_escape/workflows/Test/badge.svg?branch=main)
+
 [Python-Markdown](https://python-markdown.github.io/) extension to escape math expressions like `$2\pi$`.
 
 ## Description

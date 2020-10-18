@@ -104,8 +104,7 @@ class MathEscapePreprocessor(markdown.preprocessors.Preprocessor):
             if match1:
                 j = self._find_closing_pair(lines, i, match1)
                 if 0 <= j:
-                    tag = '<pre class="--markdown-math-escape">'
-                    lines[i] = tag + lines[i]
+                    lines[i] = _escaped_block_math_begin + lines[i]
                     for k in range(i + 1, j):
                         lines[k] = _encode(lines[k])
                     lines[j] = lines[j] + "</pre>"

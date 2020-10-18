@@ -19,6 +19,12 @@ _re_dollers_inline = re.compile(r"(?<!\\)\$(?!\$)(?P<expr>[^\$]*)(?<!\\)\$(?!\$)
 _re_dollers_block_begin = re.compile(r"^(?P<indent>\s*)(?P<fence>\$\$)")
 _re_dollers_block_end = re.compile(r"^(?P<indent>\s*)(?P<fence>\$\$)(?P<trailings>.*)$")
 
+_re_brackets_inline = re.compile(r"\\\((?P<expr>[^\$]+(?!\)))\\\)")
+_re_brackets_block_begin = re.compile(r"^(?P<indent>\s*)(?P<fence>\\\[)")
+_re_brackets_block_end = re.compile(
+    r"^(?P<indent>\s*)(?P<fence>\\\])(?P<trailings>.*)$"
+)
+
 _re_gitlab_inline = re.compile(r"(?<!\\)\$`(?P<expr>[^`]*)`\$")
 _re_gitlab_block_begin = re.compile(r"^(?P<indent>\s*)(?P<fence>```+|~~~+)math")
 _re_gitlab_block_end = re.compile(
@@ -36,11 +42,19 @@ _profiles = {
         "re_inline": _re_dollers_inline,
         "re_block_begin": _re_dollers_block_begin,
         "re_block_end": _re_dollers_block_end,
+        "match_fences": lambda o, c: True,
+    },
+    "brackets": {
+        "re_inline": _re_brackets_inline,
+        "re_block_begin": _re_brackets_block_begin,
+        "re_block_end": _re_brackets_block_end,
+        "match_fences": lambda o, c: True,
     },
     "gitlab": {
         "re_inline": _re_gitlab_inline,
         "re_block_begin": _re_gitlab_block_begin,
         "re_block_end": _re_gitlab_block_end,
+        "match_fences": lambda o, c: o == c,
     },
 }
 
@@ -107,6 +121,7 @@ class MathEscapePreprocessor(markdown.preprocessors.Preprocessor):
     def __init__(self, md, delimiters):
         self._re_block_begin = _profiles[delimiters]["re_block_begin"]
         self._re_block_end = _profiles[delimiters]["re_block_end"]
+        self._match_fences = _profiles[delimiters]["match_fences"]
         super().__init__(md)
 
     def run(self, lines: List[str]):
@@ -142,7 +157,7 @@ class MathEscapePreprocessor(markdown.preprocessors.Preprocessor):
             if (
                 match2
                 and match2.group("indent") == match.group("indent")
-                and match2.group("fence") == match.group("fence")
+                and self._match_fences(match.group("fence"), match2.group("fence"))
             ):
                 return j, match2
         return -1, None

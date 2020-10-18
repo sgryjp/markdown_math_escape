@@ -12,6 +12,10 @@ _test_patterns_block = {
     #     r"    $$|    2*\pi*r|    $$",
     #     r"    \[|    2*\pi*r|    \]",
     # ),
+    "brackets_basic": (
+        r"\[|2*\pi*r|\] (47)",
+        r"\[|2*\pi*r|\] (47)",
+    ),
     "gitlab_backticks": (
         r"```math|2*\pi*r|```(32)",
         r"\[|2*\pi*r|\](32)",

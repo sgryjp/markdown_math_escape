@@ -20,6 +20,22 @@ _test_patterns_inline = {
         r"<s>$2*\pi*r$</s>",
         r"<p><s>\(2*\pi*r\)</s></p>",
     ),
+    "brackets_basic": (
+        r"foo \(2*\pi*r\) x\(y\)z",
+        r"<p>foo \(2*\pi*r\) x\(y\)z</p>",
+    ),
+    "brackets_&lt;, &gt; and &amp;": (
+        r"\(x+y for x<0, y>0\) bar",
+        r"<p>\(x+y for x&lt;0, y&gt;0\) bar</p>",
+    ),
+    "brackets_inside <p>": (
+        r"<p>\(2*\pi*r\)</p>",
+        r"<p>\(2*\pi*r\)</p>",
+    ),
+    "brackets_inside <s>": (
+        r"<s>\(2*\pi*r\)</s>",
+        r"<p><s>\(2*\pi*r\)</s></p>",
+    ),
     "gitlab_basic": (
         r"foo $`2*\pi*r`$ x$`y`$z",
         r"<p>foo \(2*\pi*r\) x\(y\)z</p>",

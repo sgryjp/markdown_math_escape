@@ -3,7 +3,7 @@
 ![Test](https://github.com/sgryjp/markdown_math_escape/workflows/Test/badge.svg?branch=main)
 
 [Python-Markdown](https://python-markdown.github.io/) extension to escape math
-expressions like `$\LaTeX$`
+expressions like `$e^{i\pi} + 1 = 0$`.
 
 ## Description
 
@@ -41,23 +41,23 @@ An option `delimiters` is available. See the table below for supported values.
     <tbody>
         <tr>
             <td><code>dollers</code></td>
-            <td><code>$\LaTeX$</code></td>
+            <td><code>$e^{i\pi} + 1 = 0$</code></td>
             <td><pre>$$
-\LaTeX
+e^{i\pi} + 1 = 0
 $$</pre></td>
         </tr>
         <tr>
             <td><code>brackets</code></td>
-            <td><code>\(\LaTeX\)</code></td>
+            <td><code>\(e^{i\pi} + 1 = 0\)</code></td>
             <td><pre>\[
-\LaTeX
+e^{i\pi} + 1 = 0
 \]</pre></td>
         </tr>
         <tr>
             <td><code>gitlab</code></td>
-            <td><code>$`\LaTeX`$</code></td>
+            <td><code>$`e^{i\pi} + 1 = 0`$</code></td>
             <td><pre>```math
-\LaTeX
+e^{i\pi} + 1 = 0
 ```</pre></td>
         </tr>
     </tbody>

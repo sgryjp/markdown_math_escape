@@ -22,11 +22,9 @@ Firstly, install the extension by the command below:
 
     pip install git+https://github.com/sgryjp/markdown_math_escape.git
 
-Secondly, you need to let Python-Markdown to use it.
-How to do it depends on how you are using Python-Markdown.
-Please see examples section and find an example which is similar to your usage.
-
-For usage, see [examples](#examples).
+Secondly, you need to let Python-Markdown to use it. How to do it depends on
+how you are using Python-Markdown. Please see [examples section](#examples)
+and find an example which is similar to your usage.
 
 ## Options
 

@@ -151,17 +151,19 @@ class MathEscapePostprocessor(markdown.postprocessors.Postprocessor):
                     if match:
                         newline = match.group(0)
 
+                # Discard just one new line code from the input if exists
+                if line.endswith(newline):
+                    line = line[: -len(newline)]
+
                 # Replace blocks
                 if not in_block and _escaped_block_math_begin in line:
                     in_block = True
-                    lines.append(
-                        line.rstrip("\r\n").replace(_escaped_block_math_begin, "")
-                    )
+                    lines.append(line.replace(_escaped_block_math_begin, ""))
                 elif in_block and "</pre>" in line:
                     in_block = False
-                    lines.append(line.rstrip("\r\n").replace("</pre>", "", 1))
+                    lines.append(line.replace("</pre>", "", 1))
                 elif in_block:
-                    decoded = _decode(line.rstrip())
+                    decoded = _decode(line)
                     lines.append(decoded)
                 else:  # if not inside a math block
                     tokens = []

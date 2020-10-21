@@ -7,32 +7,47 @@ expressions like `$e^{i\pi} + 1 = 0$`.
 
 ## Description
 
-This extension protects math expressions from markdown parser so that no
-unexpected change will happen. Then, it converts their delimiters (enclosing
-special characters) to "brackets" styled delimiters which is supported by both
-[MathJax](https://www.mathjax.org/) and [KaTeX](https://katex.org/).
-Since this extension does not render mathematics by itself:
+The benefits of using this extension are:
 
-- Pros: It does not slow markdown processing down... it's very fast.
-- Cons: You need to setup either MathJax or KaTeX for client-side rendering.
+1. No special escaping syntax is needed
+   - You can write `\left\{`, not `\left\\{`.
+2. On writing, you are free to choose any delimiter style as you like
+   - They will be converted to "brackets" styled delimiters so that they can be
+     processed using [MathJax](https://www.mathjax.org/) or
+     [KaTeX](https://katex.org/) without any configuration.
+   - If you are using GitLab, you can choose `gitlab` delimiter style so that
+     the file will be rendered with beautiful mathematics on GitLab.
+3. It's fast
+   - This extension _does not render_ mathematics
 
-From a user point of view, you can choose delimiters for writing as you like
-and you do not need to worry about conflict between markdown syntax and TeX
-syntax.
+On the other hand:
+
+- You need to setup either MathJax or KaTeX for client-side rendering
+  - If you are using Nikola, you can use it's built-in feature to enable them
+  - Otherwise, somehow you need to load and execute one of them
+    (using a theme which supports them, for example)
+
+Technically, this extension firstly protects math expressions from
+Python-Markdown and its other extensions so that no unexpected (unhappy) change
+will happen. Then it converts their delimiters (enclosing special characters)
+to "brackets" styled delimiters... which is supported by default configuration
+of MathJax and KaTeX.
 
 ## Installation
 
 Firstly, install the extension by the command below:
 
-    pip install git+https://github.com/sgryjp/markdown_math_escape.git
+    pip install markdown_math_escape
 
 Secondly, you need to let Python-Markdown to use it. How to do it depends on
-how you are using Python-Markdown. Please see [examples section](#examples)
-and find an example which is similar to your usage.
+how you are using Python-Markdown. Please see [examples](#examples)
+for an example which matches your usage.
 
 ## Options
 
-An option `delimiters` is available. See the table below for supported values.
+The only available option is "`delimiters`" which specifies the type of
+delimiters enclosing mathematics in your markdown files.
+See the table below for supported values.
 
 <table>
     <thead>
@@ -66,7 +81,6 @@ e^{i\pi} + 1 = 0
         </tr>
     </tbody>
 </table>
-
 
 ## Examples
 
@@ -132,3 +146,8 @@ MARKDOWN_EXTENSION_CONFIGS = {
     },
 }
 ```
+
+Note that this extension is compatible with [Nikola's built-in option to enable
+MathJax or KaTeX](https://getnikola.com/handbook.html#math). Just set
+`has_math` metadata field in your post to `true` and select MathJax or KaTeX by
+specifying `USE_KATEX` value in `conf.py`.

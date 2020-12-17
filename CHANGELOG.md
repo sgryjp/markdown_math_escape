@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Loosen unnecessarily strict dependency requirement
+
 ## [0.20.10.18] - 2020-10-18
 
 ### Added

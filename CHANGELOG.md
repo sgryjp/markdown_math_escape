@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.20.12.17] - 2020-12-17
+
 ### Fixed
 
 - Loosen unnecessarily strict dependency requirement
